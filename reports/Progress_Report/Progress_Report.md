@@ -2,8 +2,8 @@ Note: Use Markdown Cheat Sheet if you need more functionality
 https://www.markdownguide.org/cheat-sheet/
 ### Date: sep 17 2024 
 
-- Action Items:
-
+**- Action Items:
+**
 * [X] Add more scrapers (or enhance current one) to obtain more headlines
 * [X] Add separate code for classes/functions
 * [X] Add readme file with progress report and action items
@@ -18,8 +18,8 @@ https://www.markdownguide.org/cheat-sheet/
     - Made scraper loopable to include other results pages
     
 
-- Action Items:
-* [X] Rename and reorganize repo from "Sample Capstone"
+**- Action Items:
+*** [X] Rename and reorganize repo from "Sample Capstone"
 * [kind of] Expand scraper to include more headlines
 * [ ] Develop AR/ARX model
 * [ ] Continue organizing script into classes, utils, etc.
@@ -31,8 +31,8 @@ https://www.markdownguide.org/cheat-sheet/
 - Meet again this week? -> No
 
 
-- Action Items:
-* [ ] Fix ARX and make sure base AR works
+**- Action Items:
+*** [ ] Fix ARX and make sure base AR works
 * [ ] News API code (Tim will send) --> extract headline
 * [ ] Use embedding vector (sequence-to-sequence) --> sentence bert
 * [ ] Model class separately, EDA class, metric class, News API class
