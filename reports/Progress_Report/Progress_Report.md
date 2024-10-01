@@ -30,8 +30,8 @@ https://www.markdownguide.org/cheat-sheet/
 - Meet again this week? -> No
 
 
-**- Action Items:
-*** [ ] Fix ARX and make sure base AR works
+**- Action Items:**
+* [ ] Fix ARX and make sure base AR works
 * [ ] News API code (Tim will send) --> extract headline
 * [ ] Use embedding vector (sequence-to-sequence) --> sentence bert
 * [ ] Model class separately, EDA class, metric class, News API class
