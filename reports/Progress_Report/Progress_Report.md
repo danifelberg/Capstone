@@ -28,14 +28,14 @@ https://www.markdownguide.org/cheat-sheet/
 - Repo organization
 - AR/ARX model evaluation
 - News API
-- Meet again this week?
+- Meet again this week? -> No
 
 - Action Items:
-* [ ] Action Item 1
-* [ ] Action Item 2
-* [ ] Action Item 3
-* [ ] Action Item 4
-* [ ] Action Item 5
+* [ ] Fix ARX and make sure base AR works
+* [ ] News API code (Tim will send) --> extract headline
+* [ ] Use embedding vector (sequence-to-sequence) --> sentence bert
+* [ ] Model class separately, EDA class, metric class, News API class
+* [ ] Main file combining code (should not be more than just a few lines)
 ---
 ### Date: oct 8 2024
 - Topics of discussion
