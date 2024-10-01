@@ -30,6 +30,7 @@ https://www.markdownguide.org/cheat-sheet/
 - News API
 - Meet again this week? -> No
 
+
 - Action Items:
 * [ ] Fix ARX and make sure base AR works
 * [ ] News API code (Tim will send) --> extract headline
