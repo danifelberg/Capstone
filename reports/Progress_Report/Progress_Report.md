@@ -31,14 +31,16 @@ https://www.markdownguide.org/cheat-sheet/
 
 
 **- Action Items:**
-* [ ] Fix ARX and make sure base AR works
-* [ ] News API code (Tim will send) --> extract headline
-* [ ] Use embedding vector (sequence-to-sequence) --> sentence bert
-* [ ] Model class separately, EDA class, metric class, News API class
-* [ ] Main file combining code (should not be more than just a few lines)
+* [X] Fix ARX and make sure base AR works
+* [kind of] News API code (Tim will send) --> extract headline (expanded on FT scraper instead)
+* [kind of] Use embedding vector (sequence-to-sequence) --> sentence bert (working, should be done by end of class)
+* [O] Model class separately, EDA class, metric class, News API class
+* [O] Main file combining code (should not be more than just a few lines)
 ---
 ### Date: oct 8 2024
-- Topics of discussion
+- Repo organization
+- AWS setup?
+- Seq2Seq (maybe)
 
 
 | Selection |        |
