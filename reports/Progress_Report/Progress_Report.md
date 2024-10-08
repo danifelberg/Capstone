@@ -33,28 +33,21 @@ https://www.markdownguide.org/cheat-sheet/
 **- Action Items:**
 * [X] Fix ARX and make sure base AR works
 * [kind of] News API code (Tim will send) --> extract headline (expanded on FT scraper instead)
-* [kind of] Use embedding vector (sequence-to-sequence) --> sentence bert (working, should be done by end of class)
+* [X] Use embedding vector (sequence-to-sequence) --> sentence bert
 * [O] Model class separately, EDA class, metric class, News API class
 * [O] Main file combining code (should not be more than just a few lines)
 ---
 ### Date: oct 8 2024
 - Repo organization
 - AWS setup?
-- Seq2Seq (maybe)
+- Seq2Seq (maybe) --> didn't use sentence bert, used pytorch instead
 
-
-| Selection |        |
-| --------- | ------ |
-| &#x2610;  |
-
-| Selection |        |
-| --------- | ------ |
-| &#x2611; |
 
 - Action Items:
-* [ ] Action Item 1
-* [ ] Action Item 2
-* [ ] Action Item 3
+* [ ] ORGANIZE REPO!!!! --> no more giant script!!!
+* [ ] Create classes for EDA, metrics, News API
+* [ ] Fix graph indices (train, test, prediction should be overlapping)
+* [ ] 
 * [ ] Action Item 4
 * [ ] Action Item 5
 ---
