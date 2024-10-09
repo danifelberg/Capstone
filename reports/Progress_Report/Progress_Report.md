@@ -45,13 +45,14 @@ https://www.markdownguide.org/cheat-sheet/
 
 - Action Items:
 * [ ] ORGANIZE REPO!!!! --> no more giant script!!!
+   * [ ] Clean up code --> models should be separate, EDAs should be separate, etc. (everything should be 1 line)
 * [ ] Create classes for EDA, metrics, News API
 * [ ] Fix graph indices (train, test, prediction should be overlapping)
-* [ ] 
-* [ ] Action Item 4
-* [ ] Action Item 5
+* [ ] **Test out AR model code (use sample stationary synthetic data)**
+* [ ] Grid search for AR (ACF/PACF is not enough)
+
 ---
-### Date: insert date
+### Date: 
 - Topics of discussion
 
 
