@@ -60,6 +60,7 @@ https://www.markdownguide.org/cheat-sheet/
 - Action Items:
 * [ ] Work on the full pipeline (ignore ARX/headlines) --> figure out ideal model for JUST stock time series
 * [ ] Continue organizing repository
+* [ ] Automate grid search so it adjusts depending on how much/often stock data is fetched
 ---
 ### Date: October 22
 - Topics of discussion
