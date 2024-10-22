@@ -70,8 +70,4 @@ https://www.markdownguide.org/cheat-sheet/
 
 
 - Action Items:
-* [ ] Action Item 1
-* [ ] Action Item 2
-* [ ] Action Item 3
-* [ ] Action Item 4
-* [ ] Action Item 5
+* [ ] For the same time period as AR model, check to see if ARX, ARIMAX, and LSTM perform better
