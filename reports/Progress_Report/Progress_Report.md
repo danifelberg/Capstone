@@ -44,28 +44,25 @@ https://www.markdownguide.org/cheat-sheet/
 
 
 - Action Items:
-* [ ] ORGANIZE REPO!!!! --> no more giant script!!!
-   * [ ] Clean up code --> models should be separate, EDAs should be separate, etc. (everything should be 1 line)
-* [ ] Create classes for EDA, metrics, News API
-* [ ] Fix graph indices (train, test, prediction should be overlapping)
-* [ ] **Test out AR model code (use sample stationary synthetic data)**
-* [ ] Grid search for AR (ACF/PACF is not enough)
+* [X] ORGANIZE REPO!!!! --> no more giant script!!!
+   * [X] Clean up code --> models should be separate, EDAs should be separate, etc. (everything should be 1 line)
+* [O] Create classes for EDA, metrics, News API --> not classes, but separate utils files
+* [O] Fix graph indices (train, test, prediction should be overlapping)
+* [O] **Test out AR model code (use sample stationary synthetic data)**
+* [O] Grid search for AR (ACF/PACF is not enough)
 
 ---
-### Date: 
-- Topics of discussion
-
-
+### October 15: 
+- Repo organization (what to improve)
+- How to fix NewsAPI scraping (currently returns error code 400)
 
 
 - Action Items:
-* [ ] Action Item 1
-* [ ] Action Item 2
-* [ ] Action Item 3
-* [ ] Action Item 4
-* [ ] Action Item 5
+* [ ] Work on the full pipeline (ignore ARX/headlines) --> figure out ideal model for JUST stock time series
+* [ ] Continue organizing repository
+* [ ] Automate grid search so it adjusts depending on how much/often stock data is fetched
 ---
-### Date: insert date
+### Date: October 22
 - Topics of discussion
 
 
