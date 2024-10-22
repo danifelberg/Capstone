@@ -58,14 +58,15 @@ https://www.markdownguide.org/cheat-sheet/
 
 
 - Action Items:
-* [ ] Work on the full pipeline (ignore ARX/headlines) --> figure out ideal model for JUST stock time series
-* [ ] Continue organizing repository
-* [ ] Automate grid search so it adjusts depending on how much/often stock data is fetched
+* [X] Work on the full pipeline (ignore ARX/headlines) --> figure out ideal model for JUST stock time series
+* [X] Continue organizing repository
+* [X] Automate grid search so it adjusts depending on how much/often stock data is fetched
 ---
 ### Date: October 22
-- Topics of discussion
-
-
+- Need to improve AR(2)?
+   - Why is it outperforming model with lower RMSE?
+- Next steps for ARX
+- Improve organization?
 
 
 - Action Items:
