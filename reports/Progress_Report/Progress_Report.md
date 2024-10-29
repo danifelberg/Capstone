@@ -70,4 +70,15 @@ https://www.markdownguide.org/cheat-sheet/
 
 
 - Action Items:
-* [ ] For the same time period as AR model, check to see if ARX, ARIMAX, and LSTM perform better
+* [X] For the same time period as AR model, check to see if ARX, SARIMAX, and LSTM perform better --> LSTM seems promising, SARIMAX less so
+
+### Date: October 29
+
+- Debugging SARIMAX code
+- Next steps (which models to use)
+
+- Action Items:
+[ ] Finish debugging SARIMAX (can include in final paper if results are promising)
+[ ] Finalize LSTM without headlines, and create new LSTM that includes headlines as an embedding (add dimensionality, values change depending on if date has a headline attached to it)
+[ ] Once LSTM is finalized, work on GRU (with and without headlines)
+[ ] Lastly, work on transformers (also with and without headlines)!
