@@ -78,8 +78,14 @@ https://www.markdownguide.org/cheat-sheet/
 - Next steps (which models to use)
 
 - Action Items:
-* [ ] Finish debugging SARIMAX (can include in final paper if results are promising)
-* [ ] Finalize LSTM without headlines, and create new LSTM that includes headlines as an embedding (add dimensionality, values change depending on if date has a headline attached to it)
+* [O] Finish debugging SARIMAX (can include in final paper if results are promising) --> may not include in final paper
+* [kind of, added dimensionalities but code is bugged] Finalize LSTM without headlines, and create new LSTM that includes headlines as an embedding (add dimensionality, values change depending on if date has a headline attached to it)
       - Should be set up as 5 different LSTMS: each one adding a new dimension (stock (done), sentiment, mean sentiment, max sentiment, min sentiment)
 * [ ] Once LSTM is finalized, work on GRU (with and without headlines)
-* [ ] Lastly, work on transformers (also with and without headlines)!
+* [ ] Lastly, work on transformers (also with and without headlines)! --> 
+
+### Date: November 19
+- Action Items:
+* [ ] FINALIZE ALL CODE BY NEXT WEEK (11/26)!!! --> Finish debugging LSTMs, and show promising results at the very least
+      - If time allows, work on GRU and maybe revisit SARIMA to incorporate exog data
+* [ ] CODE WORKS WITH RESULTS > CODE THAT ONLY PARTIALLY WORKS WITHOUT RESUTLS
