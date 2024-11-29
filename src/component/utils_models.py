@@ -5,14 +5,18 @@ Date: 2024-10-14
 Version: 1.0
 """
 
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from statsmodels.tsa.ar_model import AutoReg
 from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 import numpy as np
 import statsmodels.api as sm
-
-
+from sklearn.preprocessing import MinMaxScaler
+import tensorflow as tf
+from statsmodels.tsa.api import SARIMAX
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import LSTM, Dense, Dropout
 
 def AR_model(y, lags):
     Y_train, Y_test = train_test_split(y, test_size=0.2, shuffle=False)
@@ -32,12 +36,173 @@ def ARIMA_stock(y,order):
 
     return Y_train,Y_test,predictions,rmse
 
-def SARIMA_stock(data,order,seasonal_order):
-    mod = sm.tsa.statespace.SARIMAX(data,trend='c', order=order,
+# def SARIMAX_stock(data,order,seasonal_order,exog):
+#     mod = sm.tsa.statespace.SARIMAX(data,trend='c', order=order,
+#                                     seasonal_order=seasonal_order,
+#                                     simple_differencing=True,exog=exog)
+#     res = mod.fit(disp=False)
+#     return res
+def SARIMA_split(combined_df):
+    train_size = int(len(combined_df) * 0.8)
+    train_data = combined_df['Close'][:train_size]
+    test_data = combined_df['Close'][train_size:]
+    exog_train = combined_df['numeric_labels'][:train_size]
+    exog_test = combined_df['numeric_labels'][train_size:]
+
+    return train_data,test_data,exog_train,exog_test
+
+def SARIMAX_stock(train_data, test_data, order, seasonal_order, exog_train, exog_test):
+    mod = sm.tsa.statespace.SARIMAX(train_data, trend='c', order=order,
                                     seasonal_order=seasonal_order,
-                                    simple_differencing=True)
+                                    simple_differencing=True, exog=exog_train)
     res = mod.fit(disp=False)
-    return res
+    start_idx = len(train_data)
+    end_idx = start_idx + len(test_data) - 1
+
+    # predictions = res.predict(start=test_data.index[0], end=test_data.index[-1], exog=exog_test)
+    predictions = res.predict(start=start_idx, end=end_idx, exog=exog_test)
+
+    return res, predictions
+
+def LSTM(values):
+    values = np.array(values)
+
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    values_scaled = scaler.fit_transform(values.reshape(-1, 1))
+
+    def create_sequences(data, seq_length):
+        X = []
+        y = []
+        for i in range(len(data) - seq_length):
+            X.append(data[i:i + seq_length])
+            y.append(data[i + seq_length])
+        return np.array(X), np.array(y)
+
+    seq_length = 1
+    X, y = create_sequences(values_scaled, seq_length)
+
+    train_size = int(len(X) * 0.8)
+    X_train, X_test = X[:train_size], X[train_size:]
+    y_train, y_test = y[:train_size], y[train_size:]
+
+    X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))
+    X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], 1)))
+    model.add(tf.keras.layers.LSTM(units=50, return_sequences=False))
+    model.add(tf.keras.layers.Dense(units=25))
+    model.add(tf.keras.layers.Dense(units=1))
+
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    history = model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_test, y_test))
+
+    predictions = model.predict(X_test)
+    predictions = scaler.inverse_transform(predictions)
+    y_test_unscaled = scaler.inverse_transform(y_test.reshape(-1, 1))
+    rmse = np.sqrt(mean_squared_error(y_test_unscaled, predictions))
+
+    return rmse,y_test,y_test_unscaled,predictions
+
+def LSTM_headlines(combined_df):
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    combined_df[['Close', 'numeric_labels']] = scaler.fit_transform(combined_df[['Close', 'numeric_labels']])
+
+    train_size = int(len(combined_df) * 0.8)
+    train_data = combined_df[:train_size]
+    test_data = combined_df[train_size:]
+
+    def create_sequences(data, seq_length=1):
+        X, y = [], []
+        for i in range(len(data) - seq_length):
+            X.append(data[i:i + seq_length, :-1])
+            y.append(data[i + seq_length, -1])
+        return np.array(X), np.array(y)
+
+    features = train_data[['Close', 'numeric_labels']].values
+    X_train, y_train = create_sequences(features)
+
+    features = test_data[['Close', 'numeric_labels']].values
+    X_test, y_test = create_sequences(features)
+
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+    model.add(tf.keras.layers.Dropout(0.2))
+    model.add(tf.keras.layers.LSTM(units=50, return_sequences=False))
+    model.add(tf.keras.layers.Dropout(0.2))
+    model.add(tf.keras.layers.Dense(units=1))
+
+    model.compile(optimizer='adam', loss='mean_squared_error')
+
+    history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_test, y_test))
+
+    predicted_prices = model.predict(X_test)
+
+    predicted_prices_full = np.zeros((predicted_prices.shape[0], 2))
+    predicted_prices_full[:, 0] = predicted_prices[:, 0]
+
+    predicted_prices = scaler.inverse_transform(predicted_prices_full)[:, 0]
+
+    actual_prices_full = np.zeros((y_test.shape[0], 2))
+    actual_prices_full[:, 0] = y_test
+
+    actual_prices = scaler.inverse_transform(actual_prices_full)[:, 0]
+
+    rmse = np.sqrt(mean_squared_error(actual_prices, predicted_prices))
+
+    return rmse,actual_prices,predicted_prices
+
+def preprocess_exogenous(exog):
+    # Replace NaN with 0 and flatten lists
+    exog_mean = exog.apply(lambda x: np.mean(x) if isinstance(x, list) else (x if pd.notna(x) else 0))
+    # exog_max = exog.apply(lambda x: np.max(x) if isinstance(x, list) else (x if pd.notna(x) else 0))
+    # exog_min = exog.apply(lambda x: np.min(x) if isinstance(x, list) else (x if pd.notna(x) else 0))
+
+    return (exog_mean,
+            # exog_max,exog_min
+            )
+
+def create_lstm_sequences(data, exog, seq_length):
+    X, y = [], []
+    for i in range(seq_length, len(data)):
+        X_endog = data[i - seq_length:i]
+        X_exog = exog[i - seq_length:i]
+        X.append(np.column_stack((X_endog, X_exog)))  # Combine endogenous and exogenous
+        y.append(data[i])
+    return np.array(X), np.array(y)
+
+def LSTM_headlines_new(df):
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_data = scaler.fit_transform(df[['Close']].values)
+    scaled_exog = MinMaxScaler(feature_range=(0, 1)).fit_transform(df[['numeric_labels']].values)
+
+    seq_length = 60
+    X, y = create_lstm_sequences(scaled_data, scaled_exog, seq_length)
+
+    train_size = int(len(X) * 0.8)
+    X_train, X_test = X[:train_size], X[train_size:]
+    y_train, y_test = y[:train_size], y[train_size:]
+
+    model = tf.keras.Sequential([
+        LSTM(50, return_sequences=True, input_shape=(seq_length, 2)),
+        LSTM(50, return_sequences=False),
+        tf.keras.layers.Dense(25),
+        tf.keras.layers.Dense(1)
+    ])
+
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_test, y_test))
+
+    predictions = model.predict(X_test)
+    predictions_unscaled = scaler.inverse_transform(predictions)
+    y_test_unscaled = scaler.inverse_transform(y_test.reshape(-1, 1))
+
+    return predictions_unscaled,y_test_unscaled
+
+
+
+
+
 
 #%% CODE BELOW IS UNFINISHED SCRATCH CODE
 
@@ -75,12 +240,9 @@ def SARIMA_stock(data,order,seasonal_order):
 # print(f'AIC (ARX): {model_ARX_fit.aic}') # lower AIC (367.3 < 1786.2)
 # print(f'BIC (ARX): {model_ARX_fit.bic}') # lower BIC (375.4 < 1797.6)
 #
-# #%% SEQ2SEQ
-#
+#%% SEQ2SEQ
+
 # from sklearn.preprocessing import MinMaxScaler
-#
-# scaler = MinMaxScaler(feature_range=(0, 1))
-# df_scaled = scaler.fit_transform(df_joined_clean[['Close', 'Label_numeric']])
 #
 # # Create sequences (e.g., x days of data for prediction)
 # def create_sequences(data, seq_length):
@@ -90,8 +252,13 @@ def SARIMA_stock(data,order,seasonal_order):
 #         y.append(data[i + seq_length, 0])    # x+1th day's stock price as target
 #     return np.array(x), np.array(y)
 #
+# scaler = MinMaxScaler(feature_range=(0, 1))
+# df_scaled = scaler.fit_transform(combined_df[['Close', 'numeric_labels']])
+#
 # seq_length = 4  # Number of weeks to look back (4 = 1 month)
 # X, y = create_sequences(df_scaled, seq_length)
+#
+#
 #
 # # Split into training and test sets
 # train_size = int(len(X) * 0.8)
@@ -180,28 +347,20 @@ def SARIMA_stock(data,order,seasonal_order):
 #
 # # Inverse scale the actual test stock prices
 # real_stock_price = scaler.inverse_transform(np.concatenate((y_test.numpy().reshape(-1, 1), np.zeros((y_test.shape[0], 1))), axis=1))[:, 0]
+
+
+#%% Plotting both vars against time
+
+# fig, ax1 = plt.subplots(figsize=(10, 6))
 #
-# plt.figure(figsize=(10, 6))
-# plt.plot(real_stock_price, label='Real Stock Price')
-# plt.plot(predicted_stock_price, label='Predicted Stock Price', linestyle='dashed')
-# plt.title('Seq2Seq LSTM Model: Real vs Predicted Stock Prices')
-# plt.xlabel('Time')
-# plt.ylabel('Stock Price')
-# plt.legend()
+# ax1.plot(df_joined_clean['Close'])
+# ax2 = ax1.twinx()
+# ax2.plot(df_joined_clean['label_numeric'])
 # plt.show()
 #
-# #%% Plotting both vars against time
-#
-# # fig, ax1 = plt.subplots(figsize=(10, 6))
-# #
-# # ax1.plot(df_joined_clean['Close'])
-# # ax2 = ax1.twinx()
-# # ax2.plot(df_joined_clean['label_numeric'])
-# # plt.show()
-# #
-# # plt.plot(df_joined_clean['Close'])
-# # plt.plot(df_joined_clean['label_numeric'])
-# # plt.show()
+# plt.plot(df_joined_clean['Close'])
+# plt.plot(df_joined_clean['label_numeric'])
+# plt.show()
 
 # #%% AR/ARX model --> USE THIS
 #

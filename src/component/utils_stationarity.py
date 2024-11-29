@@ -189,6 +189,53 @@ def exponential_smoothing(data):
     detrended_data = data - smoothed_data
     return detrended_data
 
+def rev_diff(value, forecast):
+    rev_forecast = []
+    for i in range(0, len(forecast)):
+        value += forecast[i]
+        rev_forecast.append(value)
+    return rev_forecast
+
+def grid_search(data,min_order,max_order): # code from Liang!
+
+    mse_test = []
+    mse_val = []
+    final_order = min_order
+    best_mse_test = float('inf')
+    best_mse_val = float('inf')
+
+    train_size = int(len(data) * 0.8)
+    val_size = int(len(data) * 0.1)
+    test_size = len(data) - (train_size + val_size)
+
+    train = data[:train_size]
+    val = data[train_size:train_size + val_size]
+    test = data[train_size + val_size:]
+
+    for order in range(min_order, max_order + 1):
+        try:
+            model_ar = ARIMA(train, order=(order, 1, 0))
+            model_fit = model_ar.fit()
+
+            forecast_val = model_fit.forecast(steps=len(val))
+            current_mse_val = round(mean_squared_error(val, forecast_val), 4)
+            mse_val.append((order, current_mse_val))
+
+            forecast_test = model_fit.forecast(steps=len(test))
+            current_mse_test = round(mean_squared_error(test, forecast_test), 4)
+            mse_test.append((order, current_mse_test))
+
+            if current_mse_test < best_mse_test and current_mse_val < best_mse_val:
+                best_mse_test = current_mse_test
+                best_mse_val = current_mse_val
+                final_order = order
+
+        except Exception as e:
+            print(f"Error fitting ARIMA model with order {order}: {e}")
+            continue
+
+    return final_order, mse_test, mse_val
+
 #%% CODE BELOW IS UNFINISHED SCRATCH CODE
 
 # #%% Plotting Trend, Seasonality, and Residuals

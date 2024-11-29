@@ -43,6 +43,7 @@ def plot_stock_data(stock_values,company):
     plt.plot(stock_values)
     plt.xlabel("Date")
     plt.ylabel("Closing Stock Value")
+    plt.xticks(rotation=45, ha='right')
     plt.title(f'{company} Daily Closing Stock Values')
     plt.tight_layout()
     plt.show()

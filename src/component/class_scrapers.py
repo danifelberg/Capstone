@@ -13,7 +13,7 @@ Version: 1.0
 """
 
 
-def scrape_ft_headlines(company, num_pages, delay=5):
+def scrape_ft_headlines(company, num_pages, delay=2):
     all_headlines = []
     all_dates = []
 
@@ -74,8 +74,15 @@ def scrape_ft_headlines(company, num_pages, delay=5):
     else:
         first_date, last_date = None, None
 
-    print(f'Headlines scraped: {len(all_headlines)}')
-    return all_headlines, all_dates, first_date, last_date
+    dates = pd.to_datetime(all_dates)
+    df = pd.DataFrame({'Headline': all_headlines},index=dates)
+
+    df_index = df.reset_index()
+    df_noNA = df_index.dropna(subset=['index'])
+    df_noNA_index = df_noNA.set_index('index')
+    print(f'Headlines scraped: {len(df_noNA_index)}')
+
+    return df_noNA_index, first_date, last_date
 
 
 def get_economist_headlines(query, max_pages=5):

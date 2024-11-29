@@ -5,6 +5,7 @@ Date: 2024-10-14
 Version: 1.0
 """
 
+import pandas as pd
 from transformers import pipeline
 pipe = pipeline("text-classification", model="mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis")
 
@@ -26,6 +27,10 @@ def sentiment_analysis(list_of_headlines):
 
     # Return the lists of labels and scores
     return labels, scores
+
+def analyze_sentiment(headline):
+    label, score = sentiment_analysis(headline)
+    return pd.Series({'Label': label, 'Score': score})
 
 
 
