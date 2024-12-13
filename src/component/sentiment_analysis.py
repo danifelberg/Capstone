@@ -17,7 +17,6 @@ def sentiment_analysis(list_of_headlines):
         # Perform sentiment analysis on each headline
         result = pipe(headline)
 
-        # Assuming the result contains a list of dictionaries with 'label' and 'score'
         label = result[0]['label']  # Extract the 'label'
         score = result[0]['score']  # Extract the 'score'
 
@@ -31,27 +30,3 @@ def sentiment_analysis(list_of_headlines):
 def analyze_sentiment(headline):
     label, score = sentiment_analysis(headline)
     return pd.Series({'Label': label, 'Score': score})
-
-
-
-#%% adding labels and scores to df
-# df_sorted_clean['Label'] = labels
-# df_sorted_clean['Score'] = scores
-
-# class Person:
-#     def __init__(self, name, age) -> object:
-#         """
-#
-#         :rtype: object
-#         :param name:
-#         :param age:
-#         """
-#         self.name = name
-#         self.age = age
-#
-#     def __str__(self):
-#         """
-#
-#         :rtype: object
-#         """
-#         return f"{self.name}({self.age})"

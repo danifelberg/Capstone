@@ -2,7 +2,6 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import time
-from datetime import datetime, timedelta
 
 
 # -*- coding: utf-8 -*-
@@ -11,7 +10,6 @@ Author: Daniel Felberg
 Date: 2024-09-23
 Version: 1.0
 """
-
 
 def scrape_ft_headlines(company, num_pages, delay=2):
     all_headlines = []
@@ -83,52 +81,3 @@ def scrape_ft_headlines(company, num_pages, delay=2):
     print(f'Headlines scraped: {len(df_noNA_index)}')
 
     return df_noNA_index, first_date, last_date
-
-
-def get_economist_headlines(query, max_pages=5):
-    """
-    Scrapes article headlines and dates from The Economist search results.
-
-    Parameters:
-    - query: The search term to look for.
-    - max_pages: The number of result pages to iterate through.
-
-    Returns:
-    - A list of tuples containing the article headline and the corresponding date.
-    """
-    base_url = f"https://www.economist.com/search?q={query}&page={num_pages}"
-    headlines = []
-
-    for page_num in range(1, max_pages + 1):
-        url = base_url.format(query=query, page_num=page_num)
-        print(f"Scraping page {page_num}: {url}")
-
-        # Send the request to the search results page
-        response = requests.get(url)
-
-        # Check if the request was successful
-        if response.status_code != 200:
-            print(f"Failed to retrieve page {page_num}. Status code: {response.status_code}")
-            break
-
-        # Parse the page content
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        # Find all articles in the search results
-        articles = soup.find_all("article")
-
-        if not articles:
-            print(f"No articles found on page {page_num}.")
-            break
-
-        # Extract headlines and dates
-        for article in articles:
-            headline = article.find("a", {"class": "headline-link"}).get_text(strip=True)
-            date = article.find("time").get_text(strip=True)
-
-            headlines.append((headline, date))
-
-        # Sleep for a bit to be polite to the server
-        time.sleep(1)
-
-    return headlines
